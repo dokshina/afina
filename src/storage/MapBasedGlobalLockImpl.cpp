@@ -16,9 +16,9 @@ bool MapBasedGlobalLockImpl::Put(const std::string &key, const std::string &valu
         return false;
     }
     while (_curr_size + key.size() + value.size() > _max_size) {
-        _backend.erase(_list.GetTail()->key);
-        _list.DeleteTail();
          _curr_size -= _list.GetTail()->key.size() + _backend[_list.GetTail()->key]->value.size();
+         _backend.erase(_list.GetTail()->key);
+         _list.DeleteTail();
     }
 
     if (_backend.find(key) == _backend.end()) {
