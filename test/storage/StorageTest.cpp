@@ -65,7 +65,7 @@ TEST(StorageTest, BigTest) {
         ss.str("");
         storage.Put(key, val);
     }
-    
+
     for(long i=99999; i>=0; --i)
     {
         ss << "Key" << i;
@@ -74,7 +74,7 @@ TEST(StorageTest, BigTest) {
         ss << "Val" << i;
         std::string val = ss.str();
         ss.str("");
-        
+
         std::string res;
         storage.Get(key, res);
 
@@ -98,7 +98,7 @@ TEST(StorageTest, MaxTest) {
         ss.str("");
         storage.Put(key, val);
     }
-    
+
     for(long i=100; i<1100; ++i)
     {
         ss << "Key" << i;
@@ -107,19 +107,19 @@ TEST(StorageTest, MaxTest) {
         ss << "Val" << i;
         std::string val = ss.str();
         ss.str("");
-        
+
         std::string res;
         storage.Get(key, res);
 
         EXPECT_TRUE(val == res);
     }
-    
+
     for(long i=0; i<100; ++i)
     {
         ss << "Key" << i;
         std::string key = ss.str();
         ss.str("");
-        
+
         std::string res;
         EXPECT_FALSE(storage.Get(key, res));
     }
