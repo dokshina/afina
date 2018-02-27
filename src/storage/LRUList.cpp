@@ -1,6 +1,5 @@
 #include "LRUList.h"
 
-
 namespace Afina {
 namespace Backend {
 

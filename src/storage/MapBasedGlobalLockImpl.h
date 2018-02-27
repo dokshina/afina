@@ -40,8 +40,8 @@ private:
     size_t _max_size;
     size_t _curr_size;
     mutable std::unordered_map<std::string, std::shared_ptr<Entry>> _backend;
-    mutable std::mutex _m;
     mutable LRUList _list;
+    mutable std::mutex _m;
 };
 
 } // namespace Backend

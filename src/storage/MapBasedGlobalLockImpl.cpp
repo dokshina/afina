@@ -2,6 +2,7 @@
 
 #include <mutex>
 #include <memory>
+#include <string>
 
 namespace Afina {
 namespace Backend {
@@ -9,6 +10,7 @@ namespace Backend {
 // See MapBasedGlobalLockImpl.h
 bool MapBasedGlobalLockImpl::Put(const std::string &key, const std::string &value) {
     std::lock_guard<std::mutex> lock(_m);
+    auto k_size = key.size();
 
     if (key.size() + value.size() > _max_size) {
         return false;
@@ -16,6 +18,7 @@ bool MapBasedGlobalLockImpl::Put(const std::string &key, const std::string &valu
     while (_curr_size + key.size() + value.size() > _max_size) {
         _backend.erase(_list.GetTail()->key);
         _list.DeleteTail();
+         _curr_size -= _list.GetTail()->key.size() + _backend[_list.GetTail()->key]->value.size();
     }
 
     if (_backend.find(key) == _backend.end()) {
@@ -28,6 +31,7 @@ bool MapBasedGlobalLockImpl::Put(const std::string &key, const std::string &valu
     } else {
         _backend[key]->value = value;
     }
+    _curr_size += key.size() + value.size();
     return true;
 }
 
@@ -65,6 +69,7 @@ bool MapBasedGlobalLockImpl::Delete(const std::string &key) {
     _list.DeleteNode(_backend[key]);
     _backend.erase(key);
 
+    _curr_size -= key.size() + _backend[key]->value.size();
     return true;
 }
 
