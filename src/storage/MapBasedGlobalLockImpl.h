@@ -4,6 +4,7 @@
 #include <unordered_map>
 #include <mutex>
 #include <string>
+#include <memory>
 
 #include <afina/Storage.h>
 #include "LRUList.h"
