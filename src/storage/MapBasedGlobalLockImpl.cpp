@@ -12,18 +12,18 @@ bool MapBasedGlobalLockImpl::Put(const std::string &key, const std::string &valu
         return false;
     }
     while (_curr_size + key.size() + value.size() > _max_size) {
-         _curr_size -= _list.GetTail()->key.size() + _backend[_list.GetTail()->key]->value.size();
-         _backend.erase(_list.GetTail()->key);
+         _curr_size -= _list.GetTail()->iter->first.size() + _backend[_list.GetTail()->iter->first]->value.size();
+         _backend.erase(_list.GetTail()->iter);
          _list.DeleteTail();
     }
 
     if (_backend.find(key) == _backend.end()) {
         auto node = std::shared_ptr<Entry>(new Entry());
-        node->key = key;
         node->value = value;
 
         _list.AddNode(node);
-        _backend[key] = node;
+        auto it = _backend.insert(std::make_pair(key, node));
+        node->iter = it.first;
     } else {
         _backend[key]->value = value;
     }

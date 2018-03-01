@@ -2,14 +2,15 @@
 #define AFINA_STORAGE_LRU_LIST_H
 
 #include <memory>
+#include <unordered_map>
 
 namespace Afina {
 namespace Backend {
 
 struct Entry
 {
-    std::string key;
     std::string value;
+    std::unordered_map<std::string, std::shared_ptr<Entry>>::iterator iter;
     std::weak_ptr<Entry> next;
     std::weak_ptr<Entry> prev;
 };
