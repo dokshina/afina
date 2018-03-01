@@ -6,24 +6,23 @@ namespace Backend {
 // See MapBasedGlobalLockImpl.h
 bool MapBasedGlobalLockImpl::Put(const std::string &key, const std::string &value) {
     std::lock_guard<std::mutex> lock(_m);
-    auto k_size = key.size();
 
     if (key.size() + value.size() > _max_size) {
         return false;
     }
     while (_curr_size + key.size() + value.size() > _max_size) {
-         _curr_size -= _list.GetTail()->iter->first.size() + _backend[_list.GetTail()->iter->first]->value.size();
-         _backend.erase(_list.GetTail()->iter);
+         _curr_size -= _list.GetTail()->key.size() + _backend[_list.GetTail()->key]->value.size();
+         _backend.erase(_list.GetTail()->key);
          _list.DeleteTail();
     }
 
     if (_backend.find(key) == _backend.end()) {
         auto node = std::shared_ptr<Entry>(new Entry());
+        node->key = key;
         node->value = value;
 
         _list.AddNode(node);
-        auto it = _backend.insert(std::make_pair(key, node));
-        node->iter = it.first;
+        _backend.insert(std::make_pair(std::cref(node->key), node));
     } else {
         _backend[key]->value = value;
     }

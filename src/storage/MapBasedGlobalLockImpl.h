@@ -5,6 +5,7 @@
 #include <mutex>
 #include <string>
 #include <memory>
+#include <functional>
 
 #include <afina/Storage.h>
 #include "LRUList.h"
@@ -17,6 +18,12 @@ namespace Backend {
  *
  *
  */
+
+using BackendMap = std::unordered_map<std::reference_wrapper<const std::string>,
+                                       std::shared_ptr<Entry>,
+                                       std::hash<std::string>,
+                                       std::equal_to<std::string>>;
+
 class MapBasedGlobalLockImpl : public Afina::Storage {
 public:
     MapBasedGlobalLockImpl(size_t max_size = 1024) : _max_size(max_size), _curr_size(0) {}
@@ -40,7 +47,7 @@ public:
 private:
     size_t _max_size;
     size_t _curr_size;
-    mutable std::unordered_map<std::string, std::shared_ptr<Entry>> _backend;
+    mutable BackendMap _backend;
     mutable LRUList _list;
     mutable std::mutex _m;
 };
