@@ -1,10 +1,9 @@
 #include "MapBasedGlobalLockImpl.h"
 
-
 namespace Afina {
 namespace Backend {
 // See MapBasedGlobalLockImpl.h
-bool MapBasedGlobalLockImpl::PutNode(const std::string &key, const std::string &value) {
+bool MapBasedGlobalLockImpl::SimplePut(const std::string &key, const std::string &value) {
     auto it = _backend.find(key);
 
     if (it != _backend.end()) {
@@ -45,7 +44,7 @@ bool MapBasedGlobalLockImpl::Put(const std::string &key, const std::string &valu
     if (key.size() + value.size() > _max_size) return false;
     std::lock_guard<std::mutex> lock(_m);
 
-    return PutNode(key, value);
+    return SimplePut(key, value);
 }
 
 // See MapBasedGlobalLockImpl.h
@@ -54,7 +53,7 @@ bool MapBasedGlobalLockImpl::PutIfAbsent(const std::string &key, const std::stri
     std::lock_guard<std::mutex> lock(_m);
 
     if (_backend.find(key) != _backend.end()) return false;
-    return PutNode(key, value);
+    return SimplePut(key, value);
 }
 
 // See MapBasedGlobalLockImpl.h

@@ -35,7 +35,7 @@ public:
     bool PutIfAbsent(const std::string &key, const std::string &value) override;
 
     // Make final put in Put and PutIfAbsent methods
-    bool PutNode(const std::string &key, const std::string &value);
+    bool SimplePut(const std::string &key, const std::string &value);
 
     // Implements Afina::Storage interface
     bool Set(const std::string &key, const std::string &value) override;
@@ -49,7 +49,7 @@ public:
 private:
     size_t _max_size;
     size_t _curr_size;
-    mutable BackendMap _backend;
+    BackendMap _backend;
     mutable LRUList _list;
     mutable std::mutex _m;
 };

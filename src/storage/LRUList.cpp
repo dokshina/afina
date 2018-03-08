@@ -2,6 +2,15 @@
 
 namespace Afina {
 namespace Backend {
+    LRUList::~LRUList() {
+        auto tmp = _head;
+        while (tmp != nullptr) {
+            auto prev = tmp;
+            tmp = tmp->next;
+            delete prev;
+        }
+    }
+    
     void LRUList::AddNode(Entry* node) {
         assert(node);
 
@@ -14,15 +23,6 @@ namespace Backend {
             _tail = node;
         }
         _head = node;
-    }
-
-    LRUList::~LRUList() {
-        auto tmp = _head;
-        while (tmp != nullptr) {
-            auto prev = tmp;
-            tmp = tmp->next;
-            delete prev;
-        }
     }
 
     void LRUList::DeleteNode(Entry* node) {
@@ -60,6 +60,6 @@ namespace Backend {
         _head->prev = node;
         _head = node;
     }
-    
+
 } // namespace Backend
 } // namespace Afina
