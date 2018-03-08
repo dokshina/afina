@@ -4,7 +4,6 @@
 #include <unordered_map>
 #include <mutex>
 #include <string>
-#include <memory>
 #include <functional>
 
 #include <afina/Storage.h>
@@ -20,9 +19,9 @@ namespace Backend {
  */
 
 using BackendMap = std::unordered_map<std::reference_wrapper<const std::string>,
-                                       std::shared_ptr<Entry>,
-                                       std::hash<std::string>,
-                                       std::equal_to<std::string>>;
+        Entry&,
+        std::hash<std::string>,
+        std::equal_to<std::string>>;
 
 class MapBasedGlobalLockImpl : public Afina::Storage {
 public:
@@ -34,6 +33,9 @@ public:
 
     // Implements Afina::Storage interface
     bool PutIfAbsent(const std::string &key, const std::string &value) override;
+
+    // Make final put in Put and PutIfAbsent methods
+    bool PutNode(const std::string &key, const std::string &value);
 
     // Implements Afina::Storage interface
     bool Set(const std::string &key, const std::string &value) override;

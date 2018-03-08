@@ -2,6 +2,8 @@
 #define AFINA_STORAGE_LRU_LIST_H
 
 #include <memory>
+#include <iostream>
+#include <cassert>
 
 namespace Afina {
 namespace Backend {
@@ -10,24 +12,25 @@ struct Entry
 {
     std::string key;
     std::string value;
-    std::weak_ptr<Entry> next;
-    std::weak_ptr<Entry> prev;
+    Entry* next;
+    Entry* prev;
 };
 
 class LRUList {
 public:
     LRUList() : _head(nullptr), _tail(nullptr) {};
+    ~LRUList();
 
-    void AddNode(std::shared_ptr<Entry>& node);
-    void DeleteNode(std::shared_ptr<Entry>& node);
-    void DeleteTail();
-    void MakeTop(std::shared_ptr<Entry>& node);
+    void AddNode(Entry* node);
+    void DeleteNode(Entry* node);
 
-    std::shared_ptr<Entry> GetTail() const { return _tail;}
+    void MakeTop(Entry* node);
+
+    Entry* GetTail() const { return _tail;}
 
 private:
-    std::shared_ptr<Entry> _head;
-    std::shared_ptr<Entry> _tail;
+    Entry* _head;
+    Entry* _tail;
 };
 
 } // namespace Backend
