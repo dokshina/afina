@@ -40,15 +40,24 @@ protected:
     /**
      * Methos is running for each connection
      */
-    void RunConnection();
+    void RunConnection(int socket);
 
 private:
-    static void *RunAcceptorProxy(void *p);
+    const ssize_t BUF_SIZE = 2;
+
+    static void* RunAcceptorProxy(void* p);
+    static void* RunConnectionProxy(void* p);
+
+    void CleanParsed(char* buf, size_t& parsed, ssize_t& readed);
+    std::string GetBody(ssize_t& readed, ssize_t body_size, int socket);
 
     // Atomic flag to notify threads when it is time to stop. Note that
     // flag must be atomic in order to safely publisj changes cross thread
     // bounds
     std::atomic<bool> running;
+
+    // Socket for server
+    int server_socket;
 
     // Thread that is accepting new connections
     pthread_t accept_thread;
